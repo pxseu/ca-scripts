@@ -3,7 +3,7 @@
 set -e
 source ./commons.sh
 
-if [ ! -d "$ROOT_DIR" ];
+if [ -d "$ROOT_DIR" ];
 then
 	echo "Warning: Root Directory already exists! Continuing will result in all its contents being overriden."
 	read -p "Would you like to override it? (yes/no) " yn
@@ -24,6 +24,13 @@ fi
 echo "Generating new root certificate authority private $ALG key"
 read -esp "Passphrase for the private key: " PASS
 echo
+read -esp "Confirm passphrase: " CONFIRM_PASS
+
+if [ "$PASS" != "$CONFIRM_PASS" ]; then
+	echo "Could not confirm passphrase, exiting..."
+	exit 1
+fi
+
 read -p "For how long should your CA certificate be valid for in years: (default 10) " CA_YEARS
 CA_YEARS=${CA_YEARS:-10}
 echo "Generating new root certificare valid for $CA_YEARS years"
